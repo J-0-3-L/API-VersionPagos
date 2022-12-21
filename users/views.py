@@ -10,6 +10,8 @@ from .tokens import create_jwt_pair_for_user
 from rest_framework import viewsets
 from .models import User
 from django.shortcuts import redirect
+
+from rest_framework import permissions
 # Create your views here.
 
 
@@ -52,6 +54,22 @@ class LoginView(APIView):
         content = {"user": str(request.user), "auth": str(request.auth)}
 
         return Response(data=content, status=status.HTTP_200_OK)
+
+# class LogoutView(APIView):
+#     def post(self, request):
+#         # Borramos de la request la información de sesión
+#         logout(request)
+
+#         # Devolvemos la respuesta al cliente
+#         return Response(status=status.HTTP_200_OK)
+
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        logout(request)
+        return Response({'status': 'success'})
+
 
 class GetUsers(viewsets.ReadOnlyModelViewSet):
     serializer_class = GetUserSerializer
